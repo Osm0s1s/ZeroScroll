@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="icons/icon-512.png" alt="Hopper Logo" width="120" />
+
 # Hopper
 
 A Chrome extension that adds a navigation sidebar to AI chat platforms
