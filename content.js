@@ -390,7 +390,7 @@ function injectSidebar() {
     codeLink.addEventListener('click', (event) => {
       event.preventDefault();
       event.stopPropagation();
-      window.open('https://www.google.com', '_blank', 'noopener,noreferrer');
+      window.open('https://github.com/Osm0s1s/Hopper', '_blank', 'noopener,noreferrer');
     });
   }
 

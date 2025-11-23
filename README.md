@@ -6,7 +6,9 @@
 
 A Chrome extension that adds a navigation sidebar to AI chat platforms
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+![JavaScript](https://img.shields.io/badge/JavaScript-71%25-green?logo=javascript&logoColor=white)
+![Version](https://img.shields.io/badge/Version-1.0.0-green)
 
 [Installation](#installation) • [Supported Platforms](#supported-platforms) • [Development](#development)
 
@@ -18,34 +20,71 @@ Hopper adds a navigation sidebar to AI chat platforms. It lets you view all mess
 
 ## Features
 
-- Navigate through all messages in your conversation
-- Search across the entire conversation
-- Filter messages by user or AI responses
-- Bookmark and access your favorite messages
-- Resizable sidebar
-- Works across multiple AI platforms
+- **Instant Search & Filtering** — Quickly find any message and filter by user, AI, or favorites
+- **Real-time Message Extraction** — Automatically captures and indexes conversations as you chat
+- **Privacy-Focused** — All data, collections, and API keys stored securely on your local device
+- **Manifest V3 Compliant** — Built with the latest Chrome Extension standards for security and performance
+- **Multi-Platform Support** — Works seamlessly across ChatGPT, Claude, Gemini, and more
+- **Resizable Sidebar** — Customize the interface to fit your workflow
 
 ## Supported Platforms
 
-- ChatGPT
-- Claude
-- Gemini / AI Studio
-- Kimi
-- DeepSeek
-- Grok
-- Qwen
+<div align="center">
+
+![ChatGPT](https://img.shields.io/badge/ChatGPT-74aa9c?style=for-the-badge&logo=openai&logoColor=white)
+![Claude](https://img.shields.io/badge/Claude-181818?style=for-the-badge&logo=anthropic&logoColor=white)
+![Gemini](https://img.shields.io/badge/Gemini-8E75B2?style=for-the-badge&logo=google&logoColor=white)
+![Kimi](https://img.shields.io/badge/Kimi-FF6B6B?style=for-the-badge)
+![DeepSeek](https://img.shields.io/badge/DeepSeek-1E90FF?style=for-the-badge)
+![Grok](https://img.shields.io/badge/Grok-000000?style=for-the-badge&logo=x&logoColor=white)
+![Qwen](https://img.shields.io/badge/Qwen-FF6A00?style=for-the-badge)
+
+</div>
+
+## Prerequisites
+
+Modern Chromium-based browser (Chrome, Edge, or Opera)
 
 ## Installation
 
-### From Source
+### Option 1: Download ZIP (Easiest)
 
-1. Clone this repository
-2. Open Chrome and go to `chrome://extensions`
-3. Enable Developer mode (toggle in top-right corner)
-4. Click "Load unpacked" and select the extension folder
-5. Visit any supported AI chat platform
+1. **Download** — Go to [Releases](https://github.com/Osm0s1s/Hopper/releases) and download the latest `.zip` file
 
-The extension will automatically activate on supported sites.
+2. **Extract** — Unzip the file to a folder on your computer
+
+3. **Open Extensions Page** — Navigate to your browser's extensions page:
+   - Chrome: `chrome://extensions`
+   - Edge: `edge://extensions`
+   - Opera: `opera://extensions`
+
+4. **Enable Developer Mode** — Toggle the switch in the top-right corner
+
+5. **Load Extension** — Click "Load unpacked" and select the extracted folder
+
+6. **Done!** — Visit any supported AI chat platform to see Hopper in action
+
+---
+
+### Option 2: Clone from GitHub
+
+1. **Clone Repository**
+   ```bash
+   git clone https://github.com/Osm0s1s/Hopper.git
+   ```
+
+2. **Open Extensions Page** — Navigate to:
+   - Chrome: `chrome://extensions`
+   - Edge: `edge://extensions`
+   - Opera: `opera://extensions`
+
+3. **Enable Developer Mode** — Toggle the switch in the top-right corner
+
+4. **Load Extension** — Click "Load unpacked" and select the cloned folder
+
+5. **Done!** — Visit any supported AI chat platform to see Hopper in action
+
+> **Note:** The extension automatically activates on all supported platforms.
 
 ## Usage
 
@@ -113,11 +152,13 @@ window.HopperPlatform.newplatform = {
 
 ## Tech Stack
 
-- Chrome Extension Manifest V3
-- Vanilla JavaScript
-- CSS with custom properties for theming
-- MutationObserver API for live updates
-- chrome.storage.local for persistence
+| Technology | Purpose |
+|------------|---------|
+| Chrome Extension Manifest V3 | Modern extension framework for Chrome browser compatibility |
+| Vanilla JavaScript | Core logic for message detection, UI rendering, and user interactions |
+| CSS with Custom Properties | Dynamic theming and platform-specific styling |
+| MutationObserver API | Real-time DOM monitoring to detect new messages as they appear |
+| chrome.storage.local | Persistent storage for favorites, theme preferences, and sidebar state |
 
 ## License
 
@@ -126,4 +167,14 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub.
+
+---
+
+<div align="center">
+
+**If you found Hopper useful, please ⭐ star this repository!**
+
+It helps others discover the project.
+
+</div>
 
