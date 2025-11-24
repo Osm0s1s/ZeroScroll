@@ -724,6 +724,13 @@
   font-weight: 600;
 }
 
+/* Grok-specific override for User badge in Dark Mode */
+#hopper-root[data-platform="grok"]:not([data-theme="light"]) .hopper-badge-user {
+  background: #000000;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
 .hopper-badge-wrapper {
   display: flex;
   align-items: center;
