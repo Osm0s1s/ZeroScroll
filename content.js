@@ -1038,8 +1038,15 @@ function ensureMessageElement(msg, id) {
       }
     }
   } else {
-    candidate = document.querySelector(`[data-id="${id}"]`) ||
-      document.querySelector(`[id*="${id}"]`);
+    // Try originalId first (most reliable for Grok)
+    if (msg.originalId) {
+      candidate = document.getElementById(msg.originalId);
+    }
+
+    if (!candidate) {
+      candidate = document.querySelector(`[data-id="${id}"]`) ||
+        document.querySelector(`[id*="${id}"]`);
+    }
   }
 
   if (candidate) {
@@ -1072,7 +1079,13 @@ function resolveScrollContainer(target) {
 
   const ancestor = findScrollableAncestor(target);
   if (ancestor && ancestor !== document.body) {
-    container = ancestor;
+    // For Grok, don't let ancestor override if we already found the main drop-container
+    // This prevents selecting the message card itself as the scroll container
+    if (platformName === 'Grok' && container && container.getAttribute('data-testid') === 'drop-container') {
+      // Keep existing container
+    } else {
+      container = ancestor;
+    }
   }
 
   const fallback = document.scrollingElement || document.documentElement;

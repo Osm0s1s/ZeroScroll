@@ -66,6 +66,7 @@
 
             newMessages.push({
               id,
+              originalId: msgEl.id, // Store original DOM ID for reliable lookup
               role,
               content: content.substring(0, 200),
               fullContent: content,
