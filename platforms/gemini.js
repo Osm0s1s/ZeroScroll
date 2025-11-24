@@ -189,8 +189,6 @@
           assistantBlocks = Array.from(container.querySelectorAll('response-container, div.response-container'));
         }
 
-        console.error(`Hopper [Gemini]: Detected ${userBlocks.length} user blocks, ${assistantBlocks.length} assistant blocks`);
-
         const messageElements = [...userBlocks, ...assistantBlocks];
 
         // Chronological Sorting: Ensure messages are processed in visual order
@@ -200,8 +198,6 @@
         });
 
         messageElements.forEach(el => handleNode(el, el.matches('.user-query-container, user-query-content') ? 'user' : 'assistant'));
-
-        console.error(`Hopper [Gemini]: Returning ${newMessages.length} messages (previous order offset ${order})`);
 
         return newMessages;
       } catch (error) {
