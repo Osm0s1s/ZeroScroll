@@ -89,7 +89,14 @@
             const hasUserContent = itemEl.querySelector('.user-content');
             const hasSegmentContent = itemEl.querySelector('.segment-content');
 
+            const hasToolCallContent = itemEl.querySelector('.toolcall-content-text');
+
             if (thinkStage && !hasParagraph && !hasMarkdown && !hasUserContent && !hasSegmentContent) {
+              return;
+            }
+
+            // Skip if it's purely a tool call content text (thinking stage)
+            if (hasToolCallContent && !hasParagraph && !hasMarkdown && !hasUserContent && !hasSegmentContent) {
               return;
             }
 
@@ -135,7 +142,7 @@
                 if (paragraphs.length > 0) {
                   role = 'assistant';
                   content = Array.from(paragraphs)
-                    .filter(p => !p.closest('.think-stage, [class*="think-stage"]'))
+                    .filter(p => !p.closest('.think-stage, [class*="think-stage"], .toolcall-content-text'))
                     .map(p => p.textContent.trim())
                     .filter(t => t.length > 0)
                     .join('\n\n');
@@ -199,7 +206,7 @@
                 } else {
                   // No paragraphs: Try markdown or segment content
                   const markdownContainer = segmentContainer.querySelector('.markdown-container');
-                  if (markdownContainer && !markdownContainer.closest('.think-stage, [class*="think-stage"]')) {
+                  if (markdownContainer && !markdownContainer.closest('.think-stage, [class*="think-stage"], .toolcall-content-text') && !markdownContainer.classList.contains('toolcall-content-text')) {
                     role = 'assistant';
                     content = markdownContainer.textContent.trim();
                     scrollElement = segmentContainer;
@@ -208,13 +215,13 @@
                     if (segmentContent) {
                       role = 'assistant';
                       const contentClone = segmentContent.cloneNode(true);
-                      contentClone.querySelectorAll('.segment-avatar, .rive-container, [class*="segment-avatar"], [class*="rive-container"], .think-stage, [class*="think-stage"]').forEach(el => el.remove());
+                      contentClone.querySelectorAll('.segment-avatar, .rive-container, [class*="segment-avatar"], [class*="rive-container"], .think-stage, [class*="think-stage"], .toolcall-content-text').forEach(el => el.remove());
                       content = contentClone.textContent.trim();
                       scrollElement = segmentContainer;
                     } else {
                       // Fallback: Get from segment container
                       const segmentClone = segmentContainer.cloneNode(true);
-                      segmentClone.querySelectorAll('.segment-avatar, .rive-container, [class*="segment-avatar"], [class*="rive-container"], .think-stage, [class*="think-stage"]').forEach(el => el.remove());
+                      segmentClone.querySelectorAll('.segment-avatar, .rive-container, [class*="segment-avatar"], [class*="rive-container"], .think-stage, [class*="think-stage"], .toolcall-content-text').forEach(el => el.remove());
                       const segmentText = segmentClone.textContent.trim();
                       if (segmentText.length > 0) {
                         role = 'assistant';
@@ -229,18 +236,18 @@
                 const paragraph = itemEl.querySelector('.paragraph');
                 const markdown = itemEl.querySelector('.markdown-container');
 
-                if (paragraph && !paragraph.closest('.think-stage, [class*="think-stage"]')) {
+                if (paragraph && !paragraph.closest('.think-stage, [class*="think-stage"], .toolcall-content-text')) {
                   role = 'assistant';
                   content = paragraph.textContent.trim();
                   scrollElement = itemEl;
-                } else if (markdown && !markdown.closest('.think-stage, [class*="think-stage"]')) {
+                } else if (markdown && !markdown.closest('.think-stage, [class*="think-stage"], .toolcall-content-text') && !markdown.classList.contains('toolcall-content-text')) {
                   role = 'assistant';
                   content = markdown.textContent.trim();
                   scrollElement = itemEl;
                 } else if (isAssistantItem) {
                   // Has assistant class but no content: Extract from item
                   const itemClone = itemEl.cloneNode(true);
-                  itemClone.querySelectorAll('.segment-avatar, .rive-container, [class*="segment-avatar"], [class*="rive-container"], .think-stage, [class*="think-stage"], button, .btn').forEach(el => el.remove());
+                  itemClone.querySelectorAll('.segment-avatar, .rive-container, [class*="segment-avatar"], [class*="rive-container"], .think-stage, [class*="think-stage"], .toolcall-content-text, button, .btn').forEach(el => el.remove());
                   content = itemClone.textContent.trim();
                   if (content.length > 0) {
                     role = 'assistant';
@@ -252,7 +259,7 @@
                   if (hasAvatar) {
                     role = 'assistant';
                     const itemClone = itemEl.cloneNode(true);
-                    itemClone.querySelectorAll('.segment-avatar, .rive-container, [class*="segment-avatar"], [class*="rive-container"], .think-stage, [class*="think-stage"]').forEach(el => el.remove());
+                    itemClone.querySelectorAll('.segment-avatar, .rive-container, [class*="segment-avatar"], [class*="rive-container"], .think-stage, [class*="think-stage"], .toolcall-content-text').forEach(el => el.remove());
                     content = itemClone.textContent.trim();
                     if (content.length > 0) {
                       scrollElement = itemEl;
@@ -343,7 +350,7 @@
      */
     isStreaming: function () {
       try {
-        const thinkStage = document.querySelector('.think-stage, [class*="think-stage"]');
+        const thinkStage = document.querySelector('.think-stage, [class*="think-stage"], .toolcall-content-text');
         if (thinkStage) {
           const rect = thinkStage.getBoundingClientRect();
           const style = window.getComputedStyle(thinkStage);
