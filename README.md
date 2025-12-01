@@ -1,8 +1,7 @@
 # Hopper
 
-> **Long AI conversations are hard to navigate.**  
-> Hopper adds a persistent sidebar with search, filtering, and instant navigation to any message.  
-> Works locally with ChatGPT, Claude, Gemini, Grok, and more.
+> Hopper is a Chrome extension that simplifies navigation by mapping out all messages exchanged between you and AI - giving you instant access to any part of the conversation.  
+> Search, filter, bookmark, and jump around effortlessly.
 
 A Chrome extension that enhances AI chat platforms with powerful navigation.
 
