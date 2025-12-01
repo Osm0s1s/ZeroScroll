@@ -289,7 +289,7 @@ function injectSidebar() {
   const container = document.createElement('div');
   container.id = 'hopper-root';
   container.innerHTML = `
-    <div id="hopper-pill" class="hopper-pill hopper-hidden">
+    <div id="hopper-pill" class="hopper-pill">
       <div class="hopper-pill-content">
 
         <div class="hopper-pill-badge">
@@ -298,7 +298,7 @@ function injectSidebar() {
       </div>
     </div>
    
-    <div id="hopper-sidebar" class="hopper-sidebar">
+    <div id="hopper-sidebar" class="hopper-sidebar hopper-hidden">
        <div class="hopper-resize-handle"></div>
        <div class="hopper-header">
         <div class="hopper-header-title">
