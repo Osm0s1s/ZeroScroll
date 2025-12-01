@@ -3,7 +3,6 @@
 > Hopper is a Chrome extension that simplifies navigation by mapping out all messages exchanged between you and AI - giving you instant access to any part of the conversation.  
 > Search, filter, bookmark, and jump around effortlessly.
 
-A Chrome extension that enhances AI chat platforms with powerful navigation.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 ![Version](https://img.shields.io/badge/Version-1.0.0-green)
