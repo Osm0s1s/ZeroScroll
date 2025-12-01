@@ -289,25 +289,16 @@ function injectSidebar() {
   const container = document.createElement('div');
   container.id = 'hopper-root';
   container.innerHTML = `
-    <div id="hopper-pill" class="hopper-pill">
+    <div id="hopper-pill" class="hopper-pill hopper-hidden">
       <div class="hopper-pill-content">
-        <div class="hopper-pill-brand">
-          <span class="hopper-brand-text">
-            <span class="hopper-letter">H</span>
-            <span class="hopper-letter">O</span>
-            <span class="hopper-letter">P</span>
-            <span class="hopper-letter">P</span>
-            <span class="hopper-letter">E</span>
-            <span class="hopper-letter">R</span>
-          </span>
-        </div>
+
         <div class="hopper-pill-badge">
           <span class="hopper-badge">0</span>
         </div>
       </div>
     </div>
    
-    <div id="hopper-sidebar" class="hopper-sidebar hopper-hidden">
+    <div id="hopper-sidebar" class="hopper-sidebar">
        <div class="hopper-resize-handle"></div>
        <div class="hopper-header">
         <div class="hopper-header-title">
@@ -315,12 +306,6 @@ function injectSidebar() {
             <span class="hopper-header-brand">Hopper</span>
             <span id="hopper-platform-tag" class="hopper-platform-tag"></span>
           </h2>
-          <button id="hopper-code-link" class="hopper-code-link">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path d="M9 18l-6-6 6-6m6 12l6-6-6-6M4 12h3m10 0h3"/>
-            </svg>
-            <span class="hopper-tooltip">View source</span>
-          </button>
         </div>
         <div class="hopper-header-actions">
            <button id="hopper-theme-toggle" class="hopper-btn-icon hopper-theme-toggle" title="Toggle theme">
@@ -341,11 +326,7 @@ function injectSidebar() {
        </div>
       
       <div class="hopper-tabs">
-        <button class="hopper-tab hopper-tab-active" data-filter="all">
-          <span class="hopper-tab-label">All</span>
-          <span class="hopper-tab-count" data-count-type="all">0</span>
-        </button>
-        <button class="hopper-tab" data-filter="user">
+        <button class="hopper-tab hopper-tab-active" data-filter="user">
           <span class="hopper-tab-label">User</span>
           <span class="hopper-tab-count" data-count-type="user">0</span>
         </button>
@@ -371,6 +352,8 @@ function injectSidebar() {
         <div class="hopper-empty">No messages yet</div>
       </div>
     </div>
+
+    <div id="hopper-message-preview" class="hopper-message-preview"></div>
   `;
 
   document.body.appendChild(container);
@@ -384,14 +367,6 @@ function injectSidebar() {
   const themeToggle = document.getElementById('hopper-theme-toggle');
   if (themeToggle) {
     themeToggle.addEventListener('click', toggleTheme);
-  }
-  const codeLink = document.getElementById('hopper-code-link');
-  if (codeLink) {
-    codeLink.addEventListener('click', (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      window.open('https://github.com/Osm0s1s/Hopper', '_blank', 'noopener,noreferrer');
-    });
   }
 
   // Load saved sidebar width
@@ -552,6 +527,53 @@ function injectSidebar() {
         scrollToMessage(messageCard.dataset.id);
       }
     }, { passive: false, capture: false }); // Ensure we can preventDefault
+
+    // Message Preview Logic
+    const preview = document.getElementById('hopper-message-preview');
+
+    messagesContainer.addEventListener('mouseover', (e) => {
+      const messageCard = e.target.closest('.hopper-message');
+      if (messageCard && messageCard.dataset.id) {
+        const message = messages.find(m => m.id === messageCard.dataset.id);
+        if (message && preview) {
+          const content = message.fullContent || message.content;
+          if (content) {
+            preview.textContent = content;
+            preview.style.display = 'block';
+
+            // Position logic
+            const rect = messageCard.getBoundingClientRect();
+            // Align top of preview with top of card, but keep it on screen
+            let top = rect.top;
+
+            // Adjust if too low (bottom of screen)
+            if (top + preview.offsetHeight > window.innerHeight) {
+              top = window.innerHeight - preview.offsetHeight - 20;
+            }
+            // Adjust if too high
+            if (top < 20) top = 20;
+
+            preview.style.top = `${top}px`;
+
+            // Position to the left of the sidebar
+            // Sidebar width + gap
+            const sidebarWidth = sidebar.offsetWidth;
+            preview.style.right = `${sidebarWidth + 24}px`;
+          }
+        }
+      }
+    });
+
+    messagesContainer.addEventListener('mouseout', (e) => {
+      const messageCard = e.target.closest('.hopper-message');
+      const relatedTarget = e.relatedTarget;
+      // Only hide if we are leaving the message card AND not entering the preview itself (though preview is far away usually)
+      if (messageCard && (!relatedTarget || !relatedTarget.closest('.hopper-message'))) {
+        if (preview) {
+          preview.style.display = 'none';
+        }
+      }
+    });
   }
 
   // Apply initial theme
@@ -1372,7 +1394,7 @@ function updateTabCounts() {
   const assistantTab = document.querySelector('[data-count-type="assistant"]');
   const favoritesTab = document.querySelector('[data-count-type="favorites"]');
 
-  if (allTab) allTab.textContent = allCount;
+
   if (userTab) userTab.textContent = userCount;
   if (assistantTab) assistantTab.textContent = assistantCount;
   if (favoritesTab) favoritesTab.textContent = favoritesCount;
@@ -1383,7 +1405,7 @@ function updateTabCounts() {
  * @param {string} filter Filter type ('all', 'user', 'assistant', 'favorites').
  * @param {string} searchQuery Search term for filtering messages.
  */
-function updateUI(filter = 'all', searchQuery = '') {
+function updateUI(filter = 'user', searchQuery = '') {
   const badge = document.querySelector('.hopper-badge');
   const messagesContainer = document.getElementById('hopper-messages');
 
@@ -1452,22 +1474,22 @@ function updateUI(filter = 'all', searchQuery = '') {
 
   messagesContainer.innerHTML = filtered.map((msg, index) => {
     const content = searchQuery ? highlightKeyword(msg.content, searchQuery) : escapeHtml(msg.content);
-    // Get original message index (for numbering)
-    const originalIndex = messages.findIndex(m => m.id === msg.id);
-    const messageNumber = originalIndex !== -1 ? originalIndex + 1 : index + 1;
+
+    // Calculate separate numbering for user and AI messages
+    const messagesOfSameRole = messages.filter(m => m.role === msg.role);
+    const indexInRole = messagesOfSameRole.findIndex(m => m.id === msg.id);
+    const messageNumber = indexInRole !== -1 ? indexInRole + 1 : 1;
 
     return `
     <div class="hopper-message" data-id="${msg.id}">
-      <div class="hopper-message-header">
-        <div class="hopper-badge-wrapper">
-          <span class="hopper-badge-${msg.role}">${msg.role === 'user' ? 'You' : 'AI'}</span>
-          <span class="hopper-message-number">${messageNumber}</span>
-        </div>
-         <div class="hopper-message-actions">
+      <div class="hopper-message-row">
+        <span class="hopper-message-number">${messageNumber}</span>
+        <div class="hopper-message-content">${content}</div>
+        <div class="hopper-message-actions">
            <button class="hopper-btn-icon hopper-copy" 
                    data-id="${msg.id}"
                    title="Copy message">
-             <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
              </svg>
@@ -1476,13 +1498,12 @@ function updateUI(filter = 'all', searchQuery = '') {
                    data-id="${msg.id}"
                    title="Favorite">
              ${favorites.includes(msg.id)
-        ? '<svg width="16" height="16" fill="#fbbf24" stroke="#fbbf24" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'
-        : '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'
+        ? '<svg width="14" height="14" fill="#fbbf24" stroke="#fbbf24" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'
+        : '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'
       }
            </button>
-         </div>
+        </div>
       </div>
-      <div class="hopper-message-content">${content}</div>
     </div>
     `;
   }).join('');
